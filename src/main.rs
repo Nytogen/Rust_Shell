@@ -22,11 +22,11 @@ fn main() {
             let mut command = String::new();
             command = input.trim()[5..].to_owned();
             if command == *"echo" {
-                println!("echo is a shell built-in");
+                println!("echo is a shell builtin");
             } else if command == *"exit" {
-                println!("exit is a shell built-in");
+                println!("exit is a shell builtin");
             } else if command == *"type" {
-                println!("type is a shell built-in");
+                println!("type is a shell builtin");
             } else{
                 println!("{}: not found", command);
             }
