@@ -18,7 +18,19 @@ fn main() {
             break;
         } else if input.trim()[..4] == *"echo"{
             print!("{}", &input[5..]);
-        } else{
+        } else if input.trim()[..4] == *"type" {
+            let mut command = String::new();
+            command = input.trim()[5..].to_owned();
+            if command == *"echo" {
+                println!("echo is a shell built-in");
+            } else if command == *"exit" {
+                println!("exit is a shell built-in");
+            } else if command == *"type" {
+                println!("type is a shell built-in");
+            } else{
+                println!("{}: not found", command);
+            }
+        } else {
             println!("{}: command not found", input.trim())
         }
     }
