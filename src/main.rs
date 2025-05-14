@@ -21,17 +21,22 @@ fn main() {
         } else if input.trim()[..4] == *"type" {
             let mut command = String::new();
             command = input.trim()[5..].to_owned();
-            if command == *"echo" {
-                println!("echo is a shell builtin");
-            } else if command == *"exit" {
-                println!("exit is a shell builtin");
-            } else if command == *"type" {
-                println!("type is a shell builtin");
-            } else{
-                println!("{}: not found", command);
-            }
+            handle_type(&command);
         } else {
             println!("{}: command not found", input.trim())
         }
     }
+}
+
+fn handle_type(command: &str) {
+    if command == "echo" {
+        println!("echo is a shell builtin");
+    } else if command == "exit" {
+        println!("exit is a shell builtin");
+    } else if command == "type" {
+        println!("type is a shell builtin");
+    } else {
+        println!("{}: not found", command);
+    }
+
 }
