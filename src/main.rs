@@ -24,17 +24,13 @@ fn main() {
         let arguments: Vec<&str> = full_command[1..].to_vec();
 
         if *command == *"echo"{
-            handle_echo(arguments[0].trim());
+            print!("{}", &input[5..]);
         } else if *command == *"type" {
             handle_type(arguments[0].trim());
         } else {
             handle_external_program(command, arguments);
         }
     }
-}
-
-fn handle_echo(argument: &str){
-    println!("{}", argument);
 }
 
 fn handle_type(command: &str) {
