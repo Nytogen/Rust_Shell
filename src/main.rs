@@ -79,7 +79,7 @@ fn handle_external_program(exec_name: &str, arguments: Vec<&str>){
         let new_program_stdout= new_program.unwrap().stdout;
         let mut new_program_stdout_string: String = String::from_utf8(new_program_stdout).unwrap();
         new_program_stdout_string = new_program_stdout_string.replace("\n\n", "\n");
-        println!("{}", new_program_stdout_string);
+        print!("{}", new_program_stdout_string);
     }
 }
 //42:43
