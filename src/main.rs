@@ -2,6 +2,7 @@
 use std::io::{self, Write};
 use std::env;
 use std::path::Path;
+use std::process::Command;
 
 fn main() {
     // Uncomment this block to pass the first stage
@@ -22,7 +23,10 @@ fn main() {
             let command:String = input.trim()[5..].to_owned();
             handle_type(&command);
         } else {
-            println!("{}: command not found", input.trim())
+            let full_command: Vec<&str> = input.split(" ").collect();
+            let exec_name: &str = full_command[0];
+            let arguments: Vec<&str> = full_command[1..].to_vec();
+            handle_external_program(exec_name, arguments);
         }
     }
 }
@@ -63,3 +67,14 @@ fn handle_type_exec(command: &str){
         println!("{}: not found", command);
     }
 }
+
+fn handle_external_program(exec_name: &str, arguments: Vec<&str>){
+    let new_program = Command::new(exec_name)
+        .args(arguments)
+        .output();
+
+    if new_program.is_err(){
+        println!("{}: command not found", exec_name.trim());
+    }
+}
+//42:43
