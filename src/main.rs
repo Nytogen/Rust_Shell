@@ -76,8 +76,9 @@ fn handle_external_program(exec_name: &str, arguments: Vec<&str>){
     if new_program.is_err(){
         println!("{}: command not found", exec_name.trim());
     } else { 
-        //let new_program_unwrapped = new_program.unwrap();
-        println!("{:?}", new_program);
+        let new_program_stdout= new_program.unwrap().stdout;
+        let new_program_stdout_string: String = String::from_utf8(new_program_stdout).unwrap();
+        println!("{}", new_program_stdout_string);
     }
 }
 //42:43
