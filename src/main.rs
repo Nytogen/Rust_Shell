@@ -17,18 +17,24 @@ fn main() {
         
         if input.trim() == "exit 0" {
             break;
-        } else if input.trim()[..4] == *"echo"{
-            print!("{}", &input[5..]);
-        } else if input.trim()[..4] == *"type" {
-            let command:String = input.trim()[5..].to_owned();
-            handle_type(&command);
+        }
+
+        let full_command: Vec<&str> = input.split(" ").collect();
+        let command: &str = full_command[0];
+        let arguments: Vec<&str> = full_command[1..].to_vec();
+
+        if *command == *"echo"{
+            handle_echo(arguments[0].trim());
+        } else if *command == *"type" {
+            handle_type(arguments[0].trim());
         } else {
-            let full_command: Vec<&str> = input.split(" ").collect();
-            let exec_name: &str = full_command[0];
-            let arguments: Vec<&str> = full_command[1..].to_vec();
-            handle_external_program(exec_name, arguments);
+            handle_external_program(command, arguments);
         }
     }
+}
+
+fn handle_echo(argument: &str){
+    println!("{}", argument);
 }
 
 fn handle_type(command: &str) {
@@ -39,12 +45,12 @@ fn handle_type(command: &str) {
     } else if command == "type" {
         println!("type is a shell builtin");
     } else {
-        handle_type_exec(command);
+        handle_type_external(command);
     }
 
 }
 
-fn handle_type_exec(command: &str){
+fn handle_type_external(command: &str){
     let key = "PATH";
     let paths = env::var(key).unwrap();
     let path_list: Vec<&str> = paths.split(":").collect();
@@ -82,4 +88,3 @@ fn handle_external_program(exec_name: &str, arguments: Vec<&str>){
         print!("{}", new_program_stdout_string);
     }
 }
-//42:43
