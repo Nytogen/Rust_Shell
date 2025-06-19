@@ -20,13 +20,15 @@ fn main() {
         }
 
         let full_command: Vec<&str> = input.split(" ").collect();
-        let command: &str = full_command[0];
+        let command = full_command[0].trim();
         let arguments: Vec<&str> = full_command[1..].to_vec();
 
         if *command == *"echo"{
             print!("{}", &input[5..]);
         } else if *command == *"type" {
             handle_type(arguments[0].trim());
+        } else if *command == *"pwd" {
+            let _pwd_output = handle_pwd();
         } else {
             handle_external_program(command, arguments);
         }
@@ -83,4 +85,10 @@ fn handle_external_program(exec_name: &str, arguments: Vec<&str>){
         new_program_stdout_string = new_program_stdout_string.replace("\n\n", "\n");
         print!("{}", new_program_stdout_string);
     }
+}
+
+fn handle_pwd() -> std::io::Result<()>{
+    let path = env::current_dir()?;
+    println!("{}", path.display());
+    Ok(())
 }
