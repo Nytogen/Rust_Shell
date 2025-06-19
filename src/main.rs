@@ -23,11 +23,11 @@ fn main() {
         let command = full_command[0].trim();
         let arguments: Vec<&str> = full_command[1..].to_vec();
 
-        if *command == *"echo"{
+        if command == "echo"{
             print!("{}", &input[5..]);
-        } else if *command == *"type" {
+        } else if command == "type" {
             handle_type(arguments[0].trim());
-        } else if *command == *"pwd" {
+        } else if command == "pwd" {
             let _pwd_output = handle_pwd();
         } else {
             handle_external_program(command, arguments);
@@ -42,6 +42,8 @@ fn handle_type(command: &str) {
         println!("exit is a shell builtin");
     } else if command == "type" {
         println!("type is a shell builtin");
+    } else if command == "pwd"{
+        println!("pwd is a shell builtin");
     } else {
         handle_type_external(command);
     }
