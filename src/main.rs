@@ -99,7 +99,6 @@ fn handle_pwd() -> std::io::Result<()> {
 }
 
 fn handle_cd(new_path: &str) {
-    println!("{}", new_path);
     if *new_path == *"~" {
         let home_path;
         
