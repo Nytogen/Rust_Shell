@@ -104,5 +104,7 @@ fn handle_pwd() -> std::io::Result<()>{
 
 fn handle_cd(new_path: &str){
     let new_directory = Path::new(new_path);
-    assert!(env::set_current_dir(&new_directory).is_ok());
+    if !env::set_current_dir(&new_directory).is_ok(){
+        println!("cd: {}: No such file or directory", new_path);
+    }
 }
