@@ -1,12 +1,13 @@
 #[allow(unused_imports)]
-use std::io::{self, Write};
+use std::io::{ self, Write };
 use std::env;
 use std::path::Path;
 use std::process::Command;
+extern crate dirs;
 
 fn main() {
     // Uncomment this block to pass the first stage
-    loop{    
+    loop {
         print!("$ ");
         io::stdout().flush().unwrap();
 
@@ -14,7 +15,7 @@ fn main() {
         let stdin = io::stdin();
         let mut input = String::new();
         stdin.read_line(&mut input).unwrap();
-        
+
         if input.trim() == "exit 0" {
             break;
         }
@@ -23,7 +24,7 @@ fn main() {
         let command = full_command[0].trim();
         let arguments: Vec<&str> = full_command[1..].to_vec();
 
-        if command == "echo"{
+        if command == "echo" {
             print!("{}", &input[5..]);
         } else if command == "type" {
             handle_type(arguments[0].trim());
@@ -31,8 +32,7 @@ fn main() {
             let _pwd_output = handle_pwd();
         } else if command == "cd" {
             handle_cd(arguments[0].trim());
-        }
-        else {
+        } else {
             handle_external_program(command, arguments);
         }
     }
@@ -50,14 +50,12 @@ fn handle_type(command: &str) {
         println!("pwd is a shell builtin");
     } else if command == "cd" {
         println!("cd is a shell builtin");
-    }
-    else {
+    } else {
         handle_type_external(command);
     }
-
 }
 
-fn handle_type_external(command: &str){
+fn handle_type_external(command: &str) {
     let key = "PATH";
     let paths = env::var(key).unwrap();
     let path_list: Vec<&str> = paths.split(":").collect();
@@ -65,46 +63,60 @@ fn handle_type_external(command: &str){
     let mut curr_path: String;
     let mut found = false;
 
-    for path in path_list{
+    for path in path_list {
         curr_path = path.to_owned();
         curr_path.push_str("/");
         curr_path.push_str(command);
-        if Path::new(&curr_path).exists(){
+        if Path::new(&curr_path).exists() {
             found = true;
             println!("{} is {}", command, Path::new(&curr_path).display());
             break;
         }
-    }   
-    
+    }
+
     if !found {
         println!("{}: not found", command);
     }
 }
 
-fn handle_external_program(exec_name: &str, arguments: Vec<&str>){
-    let new_program = Command::new(exec_name)
-        .args(arguments)
-        .output();
+fn handle_external_program(exec_name: &str, arguments: Vec<&str>) {
+    let new_program = Command::new(exec_name).args(arguments).output();
 
-    if new_program.is_err(){
+    if new_program.is_err() {
         println!("{}: command not found", exec_name.trim());
-    } else { 
-        let new_program_stdout= new_program.unwrap().stdout;
+    } else {
+        let new_program_stdout = new_program.unwrap().stdout;
         let mut new_program_stdout_string: String = String::from_utf8(new_program_stdout).unwrap();
         new_program_stdout_string = new_program_stdout_string.replace("\n\n", "\n");
         print!("{}", new_program_stdout_string);
     }
 }
 
-fn handle_pwd() -> std::io::Result<()>{
+fn handle_pwd() -> std::io::Result<()> {
     let path = env::current_dir()?;
     println!("{}", path.display());
     Ok(())
 }
 
-fn handle_cd(new_path: &str){
-    let new_directory = Path::new(new_path);
-    if !env::set_current_dir(&new_directory).is_ok(){
-        println!("cd: {}: No such file or directory", new_path);
+fn handle_cd(new_path: &str) {
+    println!("{}", new_path);
+    if *new_path == *"~" {
+        let home_path;
+        
+        //Assumes we always can retrieve the home path
+        match dirs::home_dir() {
+            Some(path) if !path.as_os_str().is_empty() => home_path = path,
+            _ => home_path = "".into(),
+        }
+        
+        if !env::set_current_dir(&home_path).is_ok() {
+            println!("cd: {}: No such file or directory", new_path);
+        }
+
+    } else {
+        let new_directory = Path::new(new_path);
+        if !env::set_current_dir(&new_directory).is_ok() {
+            println!("cd: {}: No such file or directory", new_path);
+        }
     }
 }
