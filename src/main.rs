@@ -29,22 +29,29 @@ fn main() {
             handle_type(arguments[0].trim());
         } else if command == "pwd" {
             let _pwd_output = handle_pwd();
-        } else {
+        } else if command == "cd" {
+            handle_cd(arguments[0].trim());
+        }
+        else {
             handle_external_program(command, arguments);
         }
     }
 }
 
 fn handle_type(command: &str) {
+    //Refactor in future
     if command == "echo" {
         println!("echo is a shell builtin");
     } else if command == "exit" {
         println!("exit is a shell builtin");
     } else if command == "type" {
         println!("type is a shell builtin");
-    } else if command == "pwd"{
+    } else if command == "pwd" {
         println!("pwd is a shell builtin");
-    } else {
+    } else if command == "cd" {
+        println!("cd is a shell builtin");
+    }
+    else {
         handle_type_external(command);
     }
 
@@ -93,4 +100,9 @@ fn handle_pwd() -> std::io::Result<()>{
     let path = env::current_dir()?;
     println!("{}", path.display());
     Ok(())
+}
+
+fn handle_cd(new_path: &str){
+    let new_directory = Path::new(new_path);
+    assert!(env::set_current_dir(&new_directory).is_ok());
 }
