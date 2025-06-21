@@ -25,7 +25,7 @@ fn main() {
         let arguments: Vec<&str> = full_command[1..].to_vec();
 
         if command == "echo" {
-            print!("{}", &input[5..]);
+            handle_echo(&input[5..].trim())
         } else if command == "type" {
             handle_type(arguments[0].trim());
         } else if command == "pwd" {
@@ -35,6 +35,16 @@ fn main() {
         } else {
             handle_external_program(command, arguments);
         }
+    }
+}
+
+fn handle_echo(argument: &str){
+    if argument.starts_with('\'') &&  argument.ends_with('\''){
+        let literal_string = String::from(argument);
+        let spliced_literal = &literal_string[1..literal_string.len()-1];
+        println!("{}", spliced_literal);
+    } else{
+        println!("{}", argument);
     }
 }
 
